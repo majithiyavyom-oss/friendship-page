@@ -1,0 +1,200 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 🎉</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+}
+
+video {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.page {
+    display: none;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.active { display: flex; }
+
+input {
+    padding: 10px;
+    font-size: 18px;
+}
+
+button {
+    padding: 12px 25px;
+    margin: 10px;
+    font-size: 18px;
+    border-radius: 25px;
+    border: none;
+    background: white;
+    color: #ff4d6d;
+    cursor: pointer;
+}
+
+img {
+    width: 150px;
+    border-radius: 50%;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- VIDEO BACKGROUND -->
+<video autoplay muted loop>
+    <source src="https://www.w3schools.com/howto/rain.mp4">
+</video>
+
+<!-- MUSIC -->
+<audio id="music" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3">
+</audio>
+
+<canvas id="confetti"></canvas>
+
+<!-- PASSWORD PAGE -->
+<div class="page active" id="page1">
+    <h1>🔐 1122</h1>
+    <input type="password" id="pass">
+    <button onclick="checkPass()">Enter</button>
+</div>
+
+<!-- MAIN PAGE -->
+<div class="page" id="page2">
+    <h1>🎂 Happy Birthday Priya! 💖</h1>
+    <img src="https://i.imgur.com/4M34hi2.png">
+    <p id="type"></p>
+    <button onclick="nextPage(3)">Next ➡</button>
+</div>
+
+<!-- MESSAGE PAGE -->
+<div class="page" id="page3">
+    <h1>💖 Special Message</h1>
+    <p>You are the most amazing person in my life 😊✨</p>
+    <button onclick="nextPage(4)">Play Game 🎮</button>
+</div>
+
+<!-- GAME PAGE -->
+<div class="page" id="page4">
+    <h1>🎮 Catch the Hearts ❤️</h1>
+    <p>Score: <span id="score">0</span></p>
+    <button onclick="startGame()">Start Game</button>
+    <button onclick="nextPage(5)">Skip ➡</button>
+</div>
+
+<!-- FINAL PAGE -->
+<div class="page" id="page5">
+    <h1>🎉 Celebrate 🎂</h1>
+    <button onclick="celebrate()">Click 🎁</button>
+</div>
+
+<script>
+// PAGE SWITCH
+function nextPage(n) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById("page"+n).classList.add("active");
+}
+
+// PASSWORD
+function checkPass() {
+    let p = document.getElementById("pass").value;
+    if (p === "1234") {
+        nextPage(2);
+        typeText();
+    } else {
+        alert("Wrong password 😢");
+    }
+}
+
+// TYPEWRITER
+let msg = "Wishing you happiness, success, and lots of love 💕";
+let i = 0;
+function typeText() {
+    let el = document.getElementById("type");
+    let speed = setInterval(() => {
+        if (i < msg.length) {
+            el.innerHTML += msg.charAt(i);
+            i++;
+        } else clearInterval(speed);
+    }, 50);
+}
+
+// GAME
+let score = 0;
+function startGame() {
+    let game = setInterval(() => {
+        let heart = document.createElement("div");
+        heart.innerHTML = "❤️";
+        heart.style.position = "fixed";
+        heart.style.left = Math.random()*window.innerWidth + "px";
+        heart.style.top = "0px";
+        heart.style.fontSize = "30px";
+
+        heart.onclick = () => {
+            score++;
+            document.getElementById("score").innerText = score;
+            heart.remove();
+        };
+
+        document.body.appendChild(heart);
+
+        let fall = setInterval(() => {
+            heart.style.top = (heart.offsetTop + 5) + "px";
+            if (heart.offsetTop > window.innerHeight) {
+                heart.remove();
+                clearInterval(fall);
+            }
+        }, 30);
+
+    }, 800);
+}
+
+// CELEBRATION
+function celebrate() {
+    document.getElementById("music").play();
+    confetti();
+}
+
+// CONFETTI
+let canvas = document.getElementById("confetti");
+let ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function confetti() {
+    for (let i = 0; i < 200; i++) {
+        let x = Math.random()*canvas.width;
+        let y = Math.random()*canvas.height;
+        ctx.fillStyle = "white";
+        ctx.fillRect(x,y,5,5);
+    }
+}
+</script>
+
+</body>
+</html>
+
